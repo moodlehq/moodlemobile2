@@ -85,7 +85,7 @@
     "@ngx-translate/core": "8.0.0",
     "@ngx-translate/http-loader": "2.0.1",
     "ajv": "6.11.0",
-    "chart.js": "2.9.3",
+    "chart.js": "2.9.4",
     "com-darryncampbell-cordova-plugin-intent": "1.3.0",
     "cordova": "10.0.0",
     "cordova-android": "8.1.0",

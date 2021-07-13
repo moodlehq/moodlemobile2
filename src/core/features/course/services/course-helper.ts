@@ -381,6 +381,7 @@ export class CoreCourseHelperProvider {
         data.downloadSucceeded = false;
         data.icon = CoreConstants.ICON_DOWNLOADING;
         data.status = CoreConstants.DOWNLOADING;
+        data.loading = true;
         data.statusTranslatable = 'core.downloading';
 
         try {
@@ -405,11 +406,13 @@ export class CoreCourseHelperProvider {
 
             // Download successful.
             data.downloadSucceeded = true;
+            data.loading = false;
         } catch (error) {
             // User cancelled or there was an error.
             data.icon = initialIcon;
             data.status = initialStatus;
             data.statusTranslatable = initialStatusTranslatable;
+            data.loading = false;
 
             throw error;
         }

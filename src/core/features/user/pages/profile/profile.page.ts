@@ -169,7 +169,7 @@ export class CoreUserProfilePage implements OnInit, OnDestroy {
             return;
         }
 
-        if (this.userId != this.site.getUserId() || this.user.profileimageurl == this.site.getInfo()!.userpictureurl) {
+        if (this.userId != this.site.getUserId() || !this.isUserAvatarDirty()) {
             // Not current user or hasn't changed.
             return;
         }
@@ -186,7 +186,7 @@ export class CoreUserProfilePage implements OnInit, OnDestroy {
             }, this.site.getId());
         }
 
-        if (this.user.profileimageurl != this.site.getInfo()!.userpictureurl) {
+        if (this.isUserAvatarDirty()) {
             // The image is still different, this means that the good one is the one in site info.
             await this.refreshUser();
         } else {
@@ -283,6 +283,43 @@ export class CoreUserProfilePage implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.subscription?.unsubscribe();
         this.obsProfileRefreshed.off();
+    }
+
+    /**
+     * Check whether the user avatar is not up to date with site info.
+     *
+     * @return Whether the user avatar differs from site info cache.
+     */
+    private isUserAvatarDirty(): boolean {
+        if (!this.user || !this.site) {
+            return false;
+        }
+
+        const courseAvatarUrl = this.normalizeAvatarUrl(this.user.profileimageurl);
+        const siteAvatarUrl = this.normalizeAvatarUrl(this.site.getInfo()?.userpictureurl);
+
+        return courseAvatarUrl !== siteAvatarUrl;
+    }
+
+    /**
+     * Normalize an avatar url regardless of theme.
+     *
+     * Given that the default image is the only one that can be changed per theme, any other url will stay the same. Note that
+     * the values returned by this function may not be valid urls, given that they are intended for string comparison.
+     *
+     * @param avatarUrl Avatar url.
+     * @return Normalized avatar string (may not be a valid url).
+     */
+    private normalizeAvatarUrl(avatarUrl?: string): string {
+        if (!avatarUrl) {
+            return 'undefined';
+        }
+
+        if (avatarUrl.startsWith(`${this.site?.siteUrl}/theme/image.php`)) {
+            return 'default';
+        }
+
+        return avatarUrl;
     }
 
 }
